@@ -15,31 +15,6 @@ const (
 
 var src = rand.NewSource(time.Now().UnixNano())
 
-func ExtractNumberFromText(source string) string {
-	var result strings.Builder
-	for i := 0; i < len(source); i++ {
-		b := source[i]
-		if '0' <= b && b <= '9' {
-			result.WriteByte(b)
-		}
-	}
-	return result.String()
-}
-
-func ExtractAlfaNumericFromText(source string) string {
-	var result strings.Builder
-	for i := 0; i < len(source); i++ {
-		b := source[i]
-		if ('a' <= b && b <= 'z') ||
-			('A' <= b && b <= 'Z') ||
-			('0' <= b && b <= '9') ||
-			b == ' ' {
-			result.WriteByte(b)
-		}
-	}
-	return result.String()
-}
-
 func GenerateRandomText(n int) string {
 	sb := strings.Builder{}
 	sb.Grow(n)
