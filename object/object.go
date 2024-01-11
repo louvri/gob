@@ -87,6 +87,9 @@ func Assign(ref reflect.Value, name string, value interface{}) error {
 					return err
 				}
 				isSet = true
+			} else if tmp, ok := value.(int64); ok {
+				duration = time.Duration(tmp)
+				isSet = true
 			}
 		} else {
 			isSet = true
