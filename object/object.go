@@ -87,9 +87,6 @@ func Assign(ref reflect.Value, name string, value interface{}) error {
 					return err
 				}
 				isSet = true
-			} else if tmp, ok := value.(int64); ok {
-				duration = time.Duration(tmp)
-				isSet = true
 			}
 		} else {
 			isSet = true
@@ -97,6 +94,8 @@ func Assign(ref reflect.Value, name string, value interface{}) error {
 		if isSet {
 			ref.Set(reflect.ValueOf(duration))
 		}
+	case map[string]string:
+		//do nothing, because the value still empty and will be filled later
 	default:
 		val, ok := value.(string)
 		if !ok {
@@ -106,6 +105,7 @@ func Assign(ref reflect.Value, name string, value interface{}) error {
 	}
 	return nil
 }
+
 func EqualOnNonEmpty(data, filter interface{}) bool {
 	el1 := reflect.ValueOf(data).Elem()
 	el2 := reflect.ValueOf(filter).Elem()
