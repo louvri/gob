@@ -29,6 +29,21 @@ func ExtractAlfaNumericFromText(source string) string {
 	return result.String()
 }
 
+func ExtractAlfaNumericWithSelectedSpecialCharactersFromText(source string) string {
+	// allowed special characters are !"#$%&'()*+,-./ \[]
+	var result strings.Builder
+	for i := 0; i < len(source); i++ {
+		b := source[i]
+		if (32 <= b && b <= 57) ||
+			(65 <= b && b <= 93) ||
+			(97 <= b && b <= 122) ||
+			b == 10 {
+			result.WriteByte(b)
+		}
+	}
+	return result.String()
+}
+
 func SplitOnNotEmpty(str string, delimiter string) []string {
 	if strings.TrimSpace(str) != "" {
 		var result []string
