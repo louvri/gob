@@ -30,7 +30,7 @@ func ExtractAlfaNumericFromText(source string) string {
 }
 
 func ExtractAlfaNumericWithSelectedSpecialCharactersFromText(source string) string {
-	// allowed special characters are !"#$%&'()*+,-./ \[]
+	// allowed special characters are !"#$%&'()*+,-./ \[]\n
 	var result strings.Builder
 	for i := 0; i < len(source); i++ {
 		b := source[i]
