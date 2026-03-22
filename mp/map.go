@@ -1,37 +1,39 @@
 package mp
 
-func Copy(array map[string]interface{}, ignore []string) map[string]interface{} {
-	result := make(map[string]interface{})
-	for key, value := range array {
-		skip := false
-		for _, search := range ignore {
-			if key == search {
-				skip = true
-				break
-			}
-		}
-		if !skip {
+func Copy[K comparable, V any](m map[K]V, ignore []K) map[K]V {
+	ignoreSet := make(map[K]bool, len(ignore))
+	for _, k := range ignore {
+		ignoreSet[k] = true
+	}
+	result := make(map[K]V)
+	for key, value := range m {
+		if !ignoreSet[key] {
 			result[key] = value
 		}
 	}
 	return result
 }
-func CopyOnly(array map[string]interface{}, filter []string) map[string]interface{} {
-	result := make(map[string]interface{})
-	for key, value := range array {
-		for _, search := range filter {
-			if key == search {
-				result[key] = value
-			}
+
+func CopyOnly[K comparable, V any](m map[K]V, filter []K) map[K]V {
+	filterSet := make(map[K]bool, len(filter))
+	for _, k := range filter {
+		filterSet[k] = true
+	}
+	result := make(map[K]V)
+	for key, value := range m {
+		if filterSet[key] {
+			result[key] = value
 		}
 	}
 	return result
 }
-func Search(data map[string]interface{}, key []string) string {
-	for _, k := range key {
-		if data[k] != nil {
-			return k
+
+func Search[K comparable, V any](data map[K]V, keys []K) (K, bool) {
+	for _, k := range keys {
+		if _, ok := data[k]; ok {
+			return k, true
 		}
 	}
-	return ""
+	var zero K
+	return zero, false
 }
