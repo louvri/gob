@@ -1,8 +1,6 @@
 package str
 
-import (
-	"strings"
-)
+import "strings"
 
 func ExtractNumberFromText(source string) string {
 	var result strings.Builder
@@ -58,12 +56,11 @@ func SplitOnNotEmpty(str string, delimiter string) []string {
 }
 
 func RemoveUncommonCharacters(str string) string {
-	newBody := ""
+	var b strings.Builder
 	for _, c := range str {
-		if c > 160 {
-			continue
+		if c <= 160 {
+			b.WriteRune(c)
 		}
-		newBody += string(c)
 	}
-	return strings.TrimSpace(newBody)
+	return strings.TrimSpace(b.String())
 }

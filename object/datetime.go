@@ -1,30 +1,33 @@
 package object
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-func ConvertDateTimeTextWithTimezone(dateTimeText, sourceFormat, targetFormat string, timezone *time.Location) string {
-	if dateTimeText != "" {
-		orderTime, _ := time.Parse(sourceFormat, dateTimeText)
-		return orderTime.In(timezone).Format(targetFormat)
+func ConvertDateTimeTextWithTimezone(dateTimeText, sourceFormat, targetFormat string, timezone *time.Location) (string, error) {
+	if dateTimeText == "" {
+		return "", nil
 	}
-
-	return ""
+	t, err := time.Parse(sourceFormat, dateTimeText)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse %q with format %q: %w", dateTimeText, sourceFormat, err)
+	}
+	return t.In(timezone).Format(targetFormat), nil
 }
 
-func GetTimeVariableValue(dateTimeText, sourceFormat, targetFormat string, timezone *time.Location) string {
-	if dateTimeText != "" {
-		timeVariableValue, _ := time.Parse(sourceFormat, dateTimeText)
-		return timeVariableValue.In(timezone).Format(targetFormat)
-	}
-
-	return ""
+// Deprecated: GetTimeVariableValue is identical to ConvertDateTimeTextWithTimezone. Use that instead.
+func GetTimeVariableValue(dateTimeText, sourceFormat, targetFormat string, timezone *time.Location) (string, error) {
+	return ConvertDateTimeTextWithTimezone(dateTimeText, sourceFormat, targetFormat, timezone)
 }
 
-func ConvertDateWithTimezone(dateTimeText, targetFormat string, timezone *time.Location) string {
-	if dateTimeText != "" {
-		orderTime, _ := time.Parse(targetFormat, dateTimeText)
-		return orderTime.In(timezone).Format(targetFormat)
+func ConvertDateWithTimezone(dateTimeText, targetFormat string, timezone *time.Location) (string, error) {
+	if dateTimeText == "" {
+		return "", nil
 	}
-
-	return ""
+	t, err := time.Parse(targetFormat, dateTimeText)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse %q with format %q: %w", dateTimeText, targetFormat, err)
+	}
+	return t.In(timezone).Format(targetFormat), nil
 }

@@ -1,6 +1,6 @@
 package arr
 
-func Search(array []string, search string) int {
+func Search[T comparable](array []T, search T) int {
 	for i, item := range array {
 		if item == search {
 			return i
@@ -9,30 +9,31 @@ func Search(array []string, search string) int {
 	return -1
 }
 
-func Insert(array []string, data string, index int) []string {
-	result := array[:index]
-	tmp := array[index:]
+func Insert[T any](array []T, data T, index int) []T {
+	if index < 0 || index > len(array) {
+		panic("arr.Insert: index out of range")
+	}
+	result := make([]T, 0, len(array)+1)
+	result = append(result, array[:index]...)
 	result = append(result, data)
-	result = append(result, tmp...)
+	result = append(result, array[index:]...)
 	return result
 }
 
-func Copy(array []string, ignore []string) []string {
-	result := make([]string, 0)
+func Copy[T comparable](array []T, ignore []T) []T {
+	ignoreSet := make(map[T]bool, len(ignore))
+	for _, item := range ignore {
+		ignoreSet[item] = true
+	}
+	result := make([]T, 0)
 	for _, item := range array {
-		skip := false
-		for _, search := range ignore {
-			if search == item {
-				skip = true
-				break
-			}
-		}
-		if !skip {
+		if !ignoreSet[item] {
 			result = append(result, item)
 		}
 	}
 	return result
 }
+
 func Trim(array []string) []string {
 	result := make([]string, 0)
 	for _, item := range array {
@@ -42,10 +43,11 @@ func Trim(array []string) []string {
 	}
 	return result
 }
-func Unique(arr1 []string, arr2 []string) []string {
-	result := make([]string, 0)
-	index1 := make(map[string]bool)
-	index2 := make(map[string]bool)
+
+func Unique[T comparable](arr1 []T, arr2 []T) []T {
+	result := make([]T, 0)
+	index1 := make(map[T]bool)
+	index2 := make(map[T]bool)
 	for _, item := range arr1 {
 		index1[item] = true
 	}
@@ -60,33 +62,44 @@ func Unique(arr1 []string, arr2 []string) []string {
 			result = append(result, item)
 		}
 	}
-
 	return result
 }
+
+// Deprecated: UniqueInt is superseded by Unique[int64]. Use that instead.
 func UniqueInt(arr1 []int64, arr2 []int64) []int64 {
-	result := make([]int64, 0)
-	index1 := make(map[int64]bool)
-	index2 := make(map[int64]bool)
-	for _, item := range arr1 {
-		index1[item] = true
-	}
-	for _, item := range arr2 {
-		if !index1[item] {
-			result = append(result, item)
-		}
-	}
-	for _, item := range arr1 {
-		if !index2[item] {
-			result = append(result, item)
-		}
-	}
-	return result
+	return Unique(arr1, arr2)
 }
 
-func Index(columns []string) map[string]bool {
-	idx := make(map[string]bool)
+func Index[T comparable](columns []T) map[T]bool {
+	idx := make(map[T]bool, len(columns))
 	for _, c := range columns {
 		idx[c] = true
 	}
 	return idx
+}
+
+func Map[T any, R any](data []T, fn func(T) R) []R {
+	result := make([]R, len(data))
+	for i, item := range data {
+		result[i] = fn(item)
+	}
+	return result
+}
+
+func Filter[T any](data []T, fn func(T) bool) []T {
+	result := make([]T, 0)
+	for _, item := range data {
+		if fn(item) {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func Reduce[T any, R any](data []T, initial R, fn func(R, T) R) R {
+	acc := initial
+	for _, item := range data {
+		acc = fn(acc, item)
+	}
+	return acc
 }
